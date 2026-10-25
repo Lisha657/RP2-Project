@@ -1,6 +1,7 @@
 from data_quality import check_data_quality
 from sql_testing import test_sql_file
 from data_validation import validate_kpi
+from report_generator import generate_report
 
 
 def print_report(title, results):
@@ -11,7 +12,7 @@ def print_report(title, results):
         print(f"{key}: {value}")
 
 
-def main():  
+def main():
     data_results = check_data_quality("test_data/sales.csv")
     print_report("DATA QUALITY TEST REPORT", data_results)
 
@@ -25,6 +26,15 @@ def main():
         operation="sum"
     )
     print_report("KPI VALIDATION REPORT", kpi_results)
+
+    generate_report(
+        data_quality=data_results,
+        sql_testing=sql_results,
+        kpi_validation=kpi_results
+    )
+
+    print("\nConsolidated report saved to test_report.json")
+
 
 if __name__ == "__main__":
     main()
