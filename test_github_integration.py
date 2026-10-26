@@ -1,4 +1,6 @@
 import unittest
+import requests
+import tempfile
 from unittest.mock import Mock, patch
 
 from github_integration import (
@@ -95,3 +97,52 @@ class TestGitHubFileRetrieval(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestGitHubErrorHandling(unittest.TestCase):
+
+    @patch("github_integration.requests.get")
+    def test_repository_not_found(self, mock_get):
+        mock_response = Mock()
+        mock_response.status_code = 404
+        mock_response.raise_for_status.side_effect = (
+            requests.exceptions.HTTPError(response=mock_response)
+        )
+        mock_get.return_value = mock_response
+
+        with self.assertRaisesRegex(RuntimeError, "Repository not found"):
+            fetch_repository_files("https://github.com/example/missing-repo")
+
+    @patch("github_integration.requests.get")
+    def test_network_failure(self, mock_get):
+        mock_get.side_effect = requests.exceptions.ConnectionError()
+
+        with self.assertRaisesRegex(RuntimeError, "Could not connect to GitHub"):
+            fetch_repository_files("https://github.com/example/test-repo")
+
+    @patch("github_integration.requests.get")
+    def test_request_timeout(self, mock_get):
+        mock_get.side_effect = requests.exceptions.Timeout()
+
+        with self.assertRaisesRegex(RuntimeError, "timed out"):
+            fetch_repository_files("https://github.com/example/test-repo")
+
+    @patch("github_integration.requests.get")
+    def test_repository_without_csv_or_sql(self, mock_get):
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "tree": [
+                {"path": "README.md", "type": "blob", "size": 100},
+                {"path": "src/main.py", "type": "blob", "size": 200},
+            ]
+        }
+        mock_get.return_value = mock_response
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            files = fetch_repository_files(
+                "https://github.com/example/test-repo",
+                output_dir=temp_dir,
+            )
+
+        self.assertEqual(files, [])
+        mock_get.assert_called_once()
