@@ -2,6 +2,7 @@ import unittest
 import os
 import tempfile
 import pandas as pd
+
 from data_quality import check_data_quality
 
 
@@ -59,6 +60,44 @@ class TestDataQuality(unittest.TestCase):
         )
 
         self.assertEqual(result["status"], "error")
+
+    def test_empty_file(self):
+        with open(self.temp_file.name, "w") as file:
+            pass
+
+        result = check_data_quality(self.temp_file.name)
+
+        self.assertEqual(result["status"], "error")
+        self.assertIn("empty", result["message"].lower())
+
+    def test_headers_without_data(self):
+        with open(self.temp_file.name, "w") as file:
+            file.write("name,age\n")
+
+        result = check_data_quality(self.temp_file.name)
+
+        self.assertEqual(result["status"], "issues_found")
+        self.assertEqual(result["total_rows"], 0)
+        self.assertTrue(
+            any(
+                issue["issue"] == "Empty dataset"
+                for issue in result["issues_found"]
+            )
+        )
+
+    def test_empty_rows_and_columns(self):
+        with open(self.temp_file.name, "w") as file:
+            file.write(
+                "name,age,notes\n"
+                "Alice,20,\n"
+                ",,\n"
+                "Bob,25,\n"
+            )
+
+        result = check_data_quality(self.temp_file.name)
+
+        self.assertEqual(result["empty_rows"], 1)
+        self.assertIn("notes", result["empty_columns"])
 
 
 if __name__ == "__main__":
