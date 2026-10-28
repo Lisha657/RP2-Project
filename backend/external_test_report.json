@@ -1,0 +1,126 @@
+{
+    "project": "AI-Powered Power BI Dashboard Testing Agent",
+    "generated_at": "2026-10-28T12:52:47+05:30",
+    "overall_status": "FAILED",
+    "summary": {
+        "data_quality_status": "issues_found",
+        "data_quality_issue_count": 0,
+        "missing_value_count": 0,
+        "duplicate_row_count": 0,
+        "sql_testing_status": "failed",
+        "sql_total_statements": 0,
+        "sql_passed_statements": 0,
+        "sql_failed_statements": 0,
+        "kpi_validation_status": "failed",
+        "kpi_expected_value": null,
+        "kpi_actual_value": null
+    },
+    "results": {
+        "data_quality": {
+            "status": "completed",
+            "files_tested": 1,
+            "file_results": [
+                {
+                    "file": "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/sales.csv",
+                    "status": "issues_found",
+                    "total_rows": 6,
+                    "total_columns": 3,
+                    "missing_values": {
+                        "customer": 1,
+                        "sales": 1
+                    },
+                    "duplicate_rows": 1,
+                    "data_types": {
+                        "order_id": "int64",
+                        "customer": "str",
+                        "sales": "float64"
+                    },
+                    "empty_rows": 0,
+                    "empty_columns": [],
+                    "issues_found": [
+                        {
+                            "issue": "Missing values",
+                            "severity": "Medium",
+                            "details": {
+                                "customer": 1,
+                                "sales": 1
+                            }
+                        },
+                        {
+                            "issue": "Duplicate rows",
+                            "severity": "Medium",
+                            "details": "1 duplicate rows detected"
+                        }
+                    ]
+                }
+            ]
+        },
+        "sql_testing": {
+            "status": "completed",
+            "files_tested": 2,
+            "file_results": [
+                {
+                    "file": "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/empty.sql",
+                    "status": "failed",
+                    "message": "The SQL file is empty.",
+                    "total_statements": 0,
+                    "results": []
+                },
+                {
+                    "file": "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/sample_queries.sql",
+                    "status": "success",
+                    "total_statements": 3,
+                    "passed_statements": 3,
+                    "failed_statements": 0,
+                    "results": [
+                        {
+                            "query": "SELECT customer, sales FROM orders WHERE sales > 100",
+                            "status": "success",
+                            "syntax_valid": true,
+                            "tables_referenced": [
+                                "orders"
+                            ],
+                            "issues_found": []
+                        },
+                        {
+                            "query": "SELECT * FROM customers",
+                            "status": "success",
+                            "syntax_valid": true,
+                            "tables_referenced": [
+                                "customers"
+                            ],
+                            "issues_found": []
+                        },
+                        {
+                            "query": "SELECT product_name, price FROM products",
+                            "status": "success",
+                            "syntax_valid": true,
+                            "tables_referenced": [
+                                "products"
+                            ],
+                            "issues_found": []
+                        }
+                    ]
+                }
+            ]
+        },
+        "kpi_validation": {
+            "status": "completed",
+            "results": [
+                {
+                    "file": "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/sales.csv",
+                    "column": "order_id",
+                    "operation": "sum",
+                    "actual_value": 19.0,
+                    "status": "calculated"
+                }
+            ]
+        }
+    },
+    "source_url": "https://github.com/Lisha657/RP2-Project",
+    "downloaded_files": [
+        "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/empty.sql",
+        "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/sales.csv",
+        "/Users/mohamedafthar/data_sql_testing/backend/downloaded_repo/test_data/sample_queries.sql"
+    ]
+}
