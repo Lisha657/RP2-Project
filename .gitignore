@@ -1,4 +1,3 @@
-
 # Python environment
 .venv/
 venv/
@@ -10,12 +9,16 @@ __pycache__/
 .env.*
 !.env.example
 
-# Downloaded sample repositories
+# Downloaded repositories
 downloaded_repositories/
+downloaded_repo/
+backend/downloaded_repo/
 
-# Generated output
+# Generated reports and logs
 reports/
 *.log
+test_report.json
+github_test_report.json
 
 # Editor and operating system files
 .vscode/
