@@ -1,0 +1,12 @@
+
+streamlit
+pandas
+numpy
+requests
+sqlglot
+python-dotenv
+google-genai
+jsonschema
+sqlalchemy
+Markdown
+beautifulsoup4
