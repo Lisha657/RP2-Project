@@ -11,10 +11,20 @@ def normalize_name(name):
 
 
 def extract_declarations(content, keyword):
+<<<<<<< HEAD
     """Extract TMDL declarations, including names enclosed in quotes."""
     pattern = re.compile(
         rf"""(?mi)^[ \t]*{re.escape(keyword)}[ \t]+
         (?:'((?:[^']|'')+)'|([^\r\n]+?))
+=======
+    """
+    Extract TMDL declarations, including quoted names and varied indentation.
+    Supports table, measure, and column declarations.
+    """
+    pattern = re.compile(
+        rf"""(?mi)^[ \t]*{re.escape(keyword)}[ \t]+
+        (?:'((?:[^']|'')+)'|([^\r\n=]+?))
+>>>>>>> origin/main
         [ \t]*(?:=|:=)?[ \t]*$""",
         re.VERBOSE,
     )
@@ -43,10 +53,20 @@ def check_semantic_model(project_path):
             "evidence": evidence or [],
         })
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Find accessible semantic model directories
+    # --------------------------------------------------------
+>>>>>>> origin/main
     model_dirs = []
 
     for path in root.rglob("*.SemanticModel"):
         definition = path / "definition"
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
         if definition.is_dir() and any(definition.rglob("*.tmdl")):
             model_dirs.append(definition)
 
@@ -65,15 +85,28 @@ def check_semantic_model(project_path):
 
     model_dirs = sorted(set(path.resolve() for path in model_dirs))
 
+<<<<<<< HEAD
     if not model_dirs:
         pbix_files = list(root.rglob("*.pbix"))
+=======
+    # --------------------------------------------------------
+    # Handle repositories without accessible TMDL files
+    # --------------------------------------------------------
+    if not model_dirs:
+        pbix_files = list(root.rglob("*.pbix")) if root.is_dir() else []
+>>>>>>> origin/main
 
         add(
             "NOT_TESTED",
             "semantic_model_folder",
             (
                 "PBIX files were found, but their internal models have not "
+<<<<<<< HEAD
                 "been extracted. Run pbi-tools extraction first."
+=======
+                "been extracted. Extract them to an accessible format such "
+                "as TMDL before performing static semantic-model checks."
+>>>>>>> origin/main
                 if pbix_files
                 else "No accessible TMDL semantic model was found."
             ),
@@ -93,11 +126,21 @@ def check_semantic_model(project_path):
             "findings": findings,
         }
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Collect declarations across the discovered model files
+    # --------------------------------------------------------
+>>>>>>> origin/main
     tables = {}
     measures = {}
     columns = {}
     total_tmdl_files = 0
     relationship_count = 0
+<<<<<<< HEAD
+=======
+    read_errors = 0
+>>>>>>> origin/main
 
     for model_dir in model_dirs:
         tmdl_files = sorted(model_dir.rglob("*.tmdl"))
@@ -107,6 +150,10 @@ def check_semantic_model(project_path):
             try:
                 content = file_path.read_text(encoding="utf-8-sig")
             except (OSError, UnicodeError) as error:
+<<<<<<< HEAD
+=======
+                read_errors += 1
+>>>>>>> origin/main
                 add(
                     "WARNING",
                     "tmdl_read",
@@ -125,9 +172,21 @@ def check_semantic_model(project_path):
                 columns.setdefault(normalize_name(name), name)
 
             relationship_count += len(
+<<<<<<< HEAD
                 re.findall(r"(?mi)^[ \t]*relationship[ \t]+", content)
             )
 
+=======
+                re.findall(
+                    r"(?mi)^[ \t]*relationship[ \t]+",
+                    content,
+                )
+            )
+
+    # --------------------------------------------------------
+    # Inventory summary
+    # --------------------------------------------------------
+>>>>>>> origin/main
     add(
         "PASS",
         "tmdl_inventory",
@@ -139,9 +198,19 @@ def check_semantic_model(project_path):
             f"Tables declared: {len(tables)}",
             f"Measures declared: {len(measures)}",
             f"Columns declared: {len(columns)}",
+<<<<<<< HEAD
         ],
     )
 
+=======
+            f"Relationships declared: {relationship_count}",
+        ],
+    )
+
+    # --------------------------------------------------------
+    # Table declarations
+    # --------------------------------------------------------
+>>>>>>> origin/main
     add(
         "PASS" if tables else "WARNING",
         "table_declarations",
@@ -153,6 +222,12 @@ def check_semantic_model(project_path):
         sorted(tables.values(), key=str.casefold),
     )
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Measure declarations
+    # --------------------------------------------------------
+>>>>>>> origin/main
     add(
         "PASS" if measures else "WARNING",
         "measure_declarations",
@@ -160,11 +235,25 @@ def check_semantic_model(project_path):
             f"Found {len(measures)} distinct measure name(s) across "
             "the inspected TMDL files."
             if measures
+<<<<<<< HEAD
             else "No measure declarations were detected by the text scan."
+=======
+            else (
+                "No measure declarations were detected by the text scan. "
+                "The model may contain no measures, or its TMDL syntax "
+                "may require additional parser support."
+            )
+>>>>>>> origin/main
         ),
         sorted(measures.values(), key=str.casefold),
     )
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Column declarations
+    # --------------------------------------------------------
+>>>>>>> origin/main
     add(
         "PASS" if columns else "WARNING",
         "column_declarations",
@@ -177,6 +266,12 @@ def check_semantic_model(project_path):
         sorted(columns.values(), key=str.casefold),
     )
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Relationship inventory
+    # --------------------------------------------------------
+>>>>>>> origin/main
     add(
         "PASS" if relationship_count else "NOT_TESTED",
         "relationship_inventory",
@@ -188,6 +283,12 @@ def check_semantic_model(project_path):
         ),
     )
 
+<<<<<<< HEAD
+=======
+    # --------------------------------------------------------
+    # Determine overall status
+    # --------------------------------------------------------
+>>>>>>> origin/main
     statuses = {finding["status"] for finding in findings}
 
     overall_status = (
@@ -212,9 +313,22 @@ def check_semantic_model(project_path):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-path", required=True)
     args = parser.parse_args()
 
+=======
+    parser = argparse.ArgumentParser(
+        description="Inspect Power BI semantic model TMDL files."
+    )
+    parser.add_argument(
+        "--project-path",
+        required=True,
+        help="Path to the Power BI project or extracted repository.",
+    )
+
+    args = parser.parse_args()
+>>>>>>> origin/main
     result = check_semantic_model(args.project_path)
     print(json.dumps(result, indent=2))

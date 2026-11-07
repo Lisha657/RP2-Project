@@ -1,14 +1,22 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+# Python environment
+.venv/
+>>>>>>> origin/main
 venv/
 __pycache__/
 *.py[cod]
-venv/
-.venv/
-.DS_Store
+
+# Environment variables and secrets
 .env
-test_report.json
-backend/downloaded_repo/
+.env.*
+!.env.example
+
+# Downloaded repositories
+downloaded_repositories/
 downloaded_repo/
+<<<<<<< HEAD
 github_test_report.json
 =======
 .env
@@ -18,3 +26,18 @@ __pycache__/
 *.py[cod]
 .streamlit/secrets.toml
 >>>>>>> aeae3c3 (Clean up project architecture)
+=======
+backend/downloaded_repo/
+
+# Generated reports and logs
+reports/
+*.log
+test_report.json
+github_test_report.json
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+>>>>>>> origin/main
